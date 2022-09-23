@@ -1,0 +1,267 @@
+// A loja �Casa Bela� de artigos de decora��o vende muito em presta��o. E para isso deseja armazenara uma lista com os clientes pendentes.
+// Como n�mero de clientes varia constantemente, a lista deve ser implementada como usando os conceitos de lista ligada.
+// As informa��es a serem armazenadas na lista s�o:
+
+//DADOS{
+// Nome do Cliente � string de no m�ximo 50 caracteres
+// Data da Compra � uma estrutura com dia, m�s e ano inteiros
+// Valor da D�vida - valor real
+// N�mero de Presta��es � n�mero inteiro
+// N�mero de presta��es j� pagas � numero inteiro
+//}
+
+//FUNCOES{
+// O programa dever� ter uma tela com as seguintes op��es:
+//
+// Inser��o de Novo Cliente (Se o Time conseguir, seria interessante que fosse em ordem alfab�tica) = Feito
+// Remo��o de um Cliente = NAO IMPLEMENTADO
+// Buscar um Cliente para atualizar o n�mero de presta��es pagas. Caso seja a �ltima presta��o do Cliente, deve ser impresso um aviso e o nome dele retirado da lista = NAO IMPLEMENTADO
+// Busca de um cliente � Impress�o das informa��es com o valor do Saldo devedor, considerando que sempre ser�o parcelas iguais e que se houve uma entrada n�o foi considerada no Valor da D�vida = NAO IMPLEMENTADO
+// Impress�o do nome de todos os Clientes da Lista com o n�mero de presta��es que faltam pagar e o saldo devedor = NAO IMPLEMENTADO
+//}
+
+
+
+//Definicao struct que armazena os dados dos clientes solicitados para o exercicio
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct data
+{
+    int dia;
+    int mes;
+    int ano;
+}Data;
+typedef struct dadosCliente
+{
+    char nomeCliente[50];
+    float valorDivida;
+    Data dataCompra;
+    int numPrestacoes;
+    int numPrestacoesPagas;
+}DadosCliente;
+//Definicao struct que armazena os dados do cliente junto com o encadeamento para o proximo no
+typedef struct noDadosCliente
+{
+    DadosCliente dados;
+    struct noDadosClientes* proximo;
+}NoDadosCliente;
+
+//Definicao struct que armazena o tamanho da lista formada por nos e tambem o primeiro no da lista
+typedef struct lista
+{
+    int tam;
+    NoDadosCliente* primeiroNoLista;
+}Lista;
+
+
+//FUNCOES//
+// struct lista criarLista();
+// void insereCliente(struct lista* lista);
+// void solicitaDadosCliente(NoDadosCliente* no);
+// void imprime (Lista* recebida);
+
+
+//Aloca e retorna ponteiro para lista
+Lista* criarLista(){
+    Lista* lista = (Lista*)malloc(sizeof(Lista));
+
+    lista->tam = NULL;
+    lista->primeiroNoLista = NULL;
+
+    return lista;
+}
+
+//Insere um novo no
+void insereCliente(Lista *lista){
+    NoDadosCliente* no = (NoDadosCliente*)malloc(sizeof(NoDadosCliente));
+
+    solicitaDadosCliente(&no->dados);
+
+    //Garante que o no inserido
+    no->proximo = lista->primeiroNoLista;
+    lista->primeiroNoLista = no;
+    lista->tam ++;
+}
+
+//Solicita e armazena os dados necessarios para satisfazer o no tipo DadosClientes
+void solicitaDadosCliente(DadosCliente *dados){
+    //FAZER VERIFICACAO DE DADOS
+    fflush(stdin);
+    printf("\nDigite o nome do cliente: ");
+    fgets(dados->nomeCliente,50,stdin);
+    fflush(stdout);
+
+    ////data
+    printf("\nDigite o dia da compra: ");
+    scanf("%d",&dados->dataCompra.dia);
+
+    printf("\nDigite o mes da compra: ");
+    scanf("%d",&dados->dataCompra.mes);
+    fflush(stdin);
+
+
+    printf("\nDigite o ano da compra: ");
+    scanf("%d",&dados->dataCompra.ano);
+    fflush(stdin);
+
+    printf("\nDigite o numero de prestacoes: ");
+    scanf("%d",&dados->numPrestacoes);
+    fflush(stdin);
+
+    printf("\nDigite o numero de prestacoes pagas: ");
+    scanf("%d",&dados->numPrestacoesPagas);
+    fflush(stdin);
+
+    printf("\nDigite o valor da divida: ");
+    scanf("%f",&dados->valorDivida);
+    fflush(stdin);
+
+    printf("\n||||||||||||||||||||||||||||||||||||||||||||||||\n");
+
+    //printf("\n\n\tNOME: %s\n\n\tDATA: %d\n\n\tVALOR: %f",dados->nomeCliente, dados->dataCompra.dia, dados->valorDivida);
+    printf("\nData: %i/%i/%i \n",dados->dataCompra.dia,dados->dataCompra.mes,dados->dataCompra.ano);
+    printf("\nNome: %s\nValor da divida: %.2f\n",dados->nomeCliente,dados->parcela=valorDivida/numPrestacoes);
+
+    printf("\n||||||||||||||||||||||||||||||||||||||||||||||||\n");
+
+
+
+}
+
+//Imprime os dados: e o tamanho da lista
+void imprime (Lista *recebida){
+
+    NoDadosCliente *no = recebida->primeiroNoLista; /* vari�vel auxiliar para percorrer a lista */
+
+    while(no != NULL){
+        printf("\n\tCliente = %s\n", no->dados.nomeCliente);
+        printf("\n\tValor: %f", no->dados.valorDivida);
+        no = no->proximo;
+    }
+    printf("\nTamanho: %d", recebida->tam);
+}
+
+//Funcao para buscar noDadosCliente passando o nome como referencia de busca// Retorna indice
+int buscarNome (Lista *lista){
+    char nomeSolicitado[50];
+
+    //Solicita nome para busca
+    fflush(stdin);
+    printf("\nDigite o nome do cliente: ");
+    fgets(nomeSolicitado,50,stdin);
+    fflush(stdout);
+    printf("%s", nomeSolicitado);
+
+    NoDadosCliente* aux = lista->primeiroNoLista;
+
+    if(aux != NULL){
+
+        //VERIFICAR SE EH NECESSARIO INICIAR COMO 1 OU 0//
+        int index = 0;
+
+        while(aux->dados.nomeCliente != nomeSolicitado && aux->proximo != NULL){
+            aux = aux->proximo;
+            index++;
+        }
+        if (aux != NULL){
+            //printf("\n\tTeste de Index funcao buscarNome: %d", index);
+            return index;
+        }
+
+        printf("\nCliente nao pertencente a lista\n");
+        return -1;
+    }
+
+    return printf("\n\n\tLista vazia");
+
+}
+
+//Remove um cliente de acordo com o indice
+void removeCliente(Lista *lista){
+
+    printf("\n\n\t||FUNCAO REMOVE CLIENTE||");
+    printf("\n\n\tTamanho lista atual: %d", lista->tam);
+    NoDadosCliente *aux = lista->primeiroNoLista;
+
+
+    int indexAtual = buscarNome(lista);
+    printf("\n\tTeste de Index funcao removeCliente: %d", indexAtual);
+
+    if(indexAtual == 0){
+        free(aux);
+        lista->primeiroNoLista = NULL;
+        lista->tam --;
+        printf("\nATualizacao pos remocao Tamanho: %d", lista->tam);
+
+    }
+    else {
+        int indexAnterior = indexAtual - 1;
+
+        printf("\n\tTeste de IndexAnterior funcao removeCliente: %d", indexAnterior);
+
+        NoDadosCliente *auxAnterior;
+
+        int i = -1;
+        while (i != indexAtual){
+            if(aux != NULL){
+
+                if(i == indexAnterior){
+                    auxAnterior = aux;
+                    printf("\n\n\n\tDadoAnterior: %s",auxAnterior->dados.nomeCliente);
+                    aux = aux->proximo;
+                    printf("\n\n\n\tDadoAtual: %s",aux->dados.nomeCliente);
+
+                    auxAnterior->proximo = aux->proximo;
+                    free(aux);
+                    lista->tam --;
+                    printf("\nATualizacao pos remocao Tamanho: %d", lista->tam);
+                }
+
+                aux = aux->proximo;
+                i++;
+            }
+        }
+        // for(int i = 0; i == indexAtual; i++)
+    }
+}
+
+
+
+
+
+int main(){
+
+    int finalizar = 0;
+    int opcao;
+    Lista* listaClientes = criarLista();
+
+
+   do{
+       printf("\n\n1 - Inserir cliente\n2 - imprimir\n3 - Buscar cliente pelo nome\n4 - Remover cliente via nome informado\n8 - Sair\n\nOpcao: ");
+       scanf("%d", &opcao);
+       switch(opcao){
+           case 1:
+                printf("\nTamanho: %d", listaClientes->tam);
+                insereCliente(listaClientes);
+                printf("\nATT Tamanho: %d", listaClientes->tam);
+				break;
+           case 2:
+				imprime(listaClientes);
+				break;
+           case 3:
+				buscarNome(listaClientes);
+				break;
+            case 4:
+				removeCliente(listaClientes);
+				break;
+           case 8:
+               	printf("\nFinalizando...\n");
+               	finalizar = 1;
+               	break;
+           default:
+               	printf("Opcao invalida!\n");
+       }
+   } while (!finalizar);
+}
